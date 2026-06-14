@@ -1,6 +1,6 @@
-const STORAGE_KEY = "fixdesk-data-v1";
-const USERS_KEY = "fixdesk-users-v1";
-const SESSION_KEY = "fixdesk-session-v1";
+const STORAGE_KEY = "TGT-data-v1";
+const USERS_KEY = "TGT-users-v1";
+const SESSION_KEY = "TGT-session-v1";
 const statuses = ["Recibido", "En diagnóstico", "En reparación", "Esperando repuesto", "Listo para retirar", "Finalizado"];
 const scheduleSlots = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"];
 
@@ -496,7 +496,7 @@ $("#exportHistory").addEventListener("click", () => {
   const csv = rows.map(row => row.map(value => `"${String(value).replaceAll('"', '""')}"`).join(",")).join("\n");
   const link = document.createElement("a");
   link.href = URL.createObjectURL(new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" }));
-  link.download = "historial-fixdesk.csv";
+  link.download = "historial-TGT.csv";
   link.click();
   URL.revokeObjectURL(link.href);
   showToast("Historial exportado");
