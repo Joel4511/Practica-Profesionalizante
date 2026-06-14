@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sistema web para la gestión de turnos y reparaciones de un servicio técnico informático.">
+  <title>FixDesk | Gestión de servicio técnico</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <section class="auth-screen" id="authScreen">
+    <div class="auth-brand">
+      <span class="brand-mark"><i class="bi bi-cpu"></i></span>
+      <div><strong>FixDesk</strong><small>Gestión de servicio técnico</small></div>
+    </div>
+    <div class="auth-card">
+      <span class="eyebrow">Acceso seguro</span>
+      <h1 id="authTitle">Iniciar sesión</h1>
+      <p id="authSubtitle">Ingresá con tu cuenta para administrar el taller.</p>
+      <form id="loginForm" class="auth-form">
+        <label class="form-label" for="loginEmail">Email</label>
+        <input class="form-control" id="loginEmail" name="email" type="email" required>
+        <label class="form-label" for="loginPassword">Contraseña</label>
+        <input class="form-control" id="loginPassword" name="password" type="password" minlength="6" required>
+        <button class="btn btn-primary w-100">Ingresar</button>
+      </form>
+      <form id="registerForm" class="auth-form d-none">
+        <label class="form-label" for="registerRole">Tipo de cuenta</label>
+        <select class="form-select" id="registerRole" name="role" required>
+          <option value="client">Cliente</option>
+          <option value="admin">Técnico / administrador</option>
+        </select>
+        <label class="form-label" for="registerName">Nombre completo</label>
+        <input class="form-control" id="registerName" name="name" required>
+        <label class="form-label" for="registerEmail">Email</label>
+        <input class="form-control" id="registerEmail" name="email" type="email" required>
+        <div class="row g-2" id="registerClientFields">
+          <div class="col-sm-6"><label class="form-label" for="registerPhone">Teléfono</label><input class="form-control" id="registerPhone" name="phone" required></div>
+          <div class="col-sm-6"><label class="form-label" for="registerAddress">Dirección</label><input class="form-control" id="registerAddress" name="address" required></div>
+        </div>
+        <label class="form-label" for="registerPassword">Contraseña</label>
+        <input class="form-control" id="registerPassword" name="password" type="password" minlength="6" required>
+        <button class="btn btn-primary w-100">Crear cuenta</button>
+      </form>
+      <button class="auth-switch" id="authSwitch">¿No tenés cuenta? Registrate</button>
+      <div class="auth-divider"><span>o</span></div>
+      <button class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#trackingModal"><i class="bi bi-search me-2"></i>Consultar mi reparación</button>
+      <small class="security-note"><i class="bi bi-shield-lock"></i> Las contraseñas se guardan como hash SHA-256 en esta demo.</small>
+    </div>
+  </section>
+
+  <section class="client-portal app-locked" id="clientPortal">
+    <header class="client-header">
+      <a class="brand" href="#" aria-label="FixDesk">
+        <span class="brand-mark"><i class="bi bi-cpu"></i></span>
+        <span><strong>FixDesk</strong><small>Portal del cliente</small></span>
+      </a>
+      <div class="client-header-user">
+        <span class="avatar" id="clientAvatar">CL</span>
+        <div><strong id="clientSessionName">Cliente</strong><small>Mi cuenta</small></div>
+        <button class="icon-btn client-logout" aria-label="Cerrar sesión" title="Cerrar sesión"><i class="bi bi-box-arrow-right"></i></button>
+      </div>
+    </header>
+    <main class="client-main">
+      <section class="client-hero">
+        <div><span class="eyebrow text-white-50">Portal del cliente</span><h1 id="clientWelcome">Hola.</h1><p>Pedí un turno, contanos el problema y seguí el estado de tu equipo.</p></div>
+        <span class="hero-icon"><i class="bi bi-laptop"></i></span>
+      </section>
+
+      <div class="row g-4 mt-1">
+        <div class="col-lg-7">
+          <div class="panel-card">
+            <div class="panel-header"><div><span class="eyebrow">Nueva solicitud</span><h3>Cargar turno y problema</h3></div></div>
+            <form id="clientRequestForm">
+              <div class="row g-3">
+                <div class="col-md-6"><label class="form-label" for="requestDevice">Tipo de equipo</label><select class="form-select" id="requestDevice" name="device" required><option value="">Seleccionar...</option><option>Notebook</option><option>PC de escritorio</option><option>All in One</option><option>Otro</option></select></div>
+                <div class="col-md-6"><label class="form-label" for="requestModel">Marca y modelo</label><input class="form-control" id="requestModel" name="model" placeholder="Ej. Lenovo IdeaPad 3" required></div>
+                <div class="col-md-6"><label class="form-label" for="requestSerial">Número de serie</label><input class="form-control" id="requestSerial" name="serial" placeholder="Opcional"></div>
+                <div class="col-md-6"><label class="form-label" for="requestDate">Fecha del turno</label><input class="form-control" id="requestDate" name="date" type="date" required></div>
+                <div class="col-md-6"><label class="form-label" for="requestTime">Horario</label><select class="form-select" id="requestTime" name="time" required></select></div>
+                <div class="col-12"><label class="form-label" for="requestProblem">Describí el problema</label><textarea class="form-control" id="requestProblem" name="problem" rows="4" placeholder="Contanos qué sucede, desde cuándo y cualquier detalle útil." required></textarea></div>
+              </div>
+              <button class="btn btn-primary action-btn mt-4"><i class="bi bi-calendar-check"></i>Solicitar turno</button>
+            </form>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="panel-card h-100">
+            <div class="panel-header"><div><span class="eyebrow">Mis datos</span><h3>Información de contacto</h3></div></div>
+            <form id="clientProfileForm" class="row g-3">
+              <div class="col-12"><label class="form-label" for="profileName">Nombre completo</label><input class="form-control" id="profileName" name="name" required></div>
+              <div class="col-12"><label class="form-label" for="profileEmail">Email</label><input class="form-control" id="profileEmail" name="email" type="email" readonly></div>
+              <div class="col-12"><label class="form-label" for="profilePhone">Teléfono</label><input class="form-control" id="profilePhone" name="phone" required></div>
+              <div class="col-12"><label class="form-label" for="profileAddress">Dirección</label><input class="form-control" id="profileAddress" name="address" required></div>
+              <div class="col-12"><button class="btn btn-outline-primary action-btn">Actualizar mis datos</button></div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-card mt-4">
+        <div class="panel-header"><div><span class="eyebrow">Agenda</span><h3>Mis turnos solicitados</h3></div></div>
+        <div id="clientAppointments"></div>
+      </div>
+      <div class="panel-card mt-4">
+        <div class="panel-header"><div><span class="eyebrow">Seguimiento</span><h3>Estado de mis reparaciones</h3></div></div>
+        <div class="row g-3" id="clientRepairs"></div>
+      </div>
+    </main>
+  </section>
+
+  <div class="app-shell app-locked" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-view="dashboard" aria-label="Ir al inicio">
+        <span class="brand-mark"><i class="bi bi-cpu"></i></span>
+        <span><strong>FixDesk</strong><small>Servicio técnico</small></span>
+      </a>
+
+      <nav class="sidebar-nav" aria-label="Navegación principal">
+        <button class="nav-link active" data-view="dashboard"><i class="bi bi-grid-1x2"></i><span>Resumen</span></button>
+        <button class="nav-link" data-view="turnos"><i class="bi bi-calendar2-week"></i><span>Turnos</span></button>
+        <button class="nav-link" data-view="clientes"><i class="bi bi-people"></i><span>Clientes</span></button>
+        <button class="nav-link" data-view="reparaciones"><i class="bi bi-tools"></i><span>Reparaciones</span></button>
+        <button class="nav-link" data-view="historial"><i class="bi bi-clock-history"></i><span>Historial</span></button>
+      </nav>
+
+      <div class="sidebar-help">
+        <i class="bi bi-headset"></i>
+        <div><strong>¿Necesitás ayuda?</strong><small>Centro de soporte</small></div>
+        <i class="bi bi-arrow-right ms-auto"></i>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="btn menu-btn" id="menuBtn" aria-label="Abrir menú"><i class="bi bi-list"></i></button>
+        <div class="topbar-title">
+          <span class="eyebrow">Panel de administración</span>
+          <h1 id="pageTitle">Resumen general</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-btn" aria-label="Notificaciones"><i class="bi bi-bell"></i><span></span></button>
+          <div class="user-profile">
+            <span class="avatar">FT</span>
+            <div><strong id="sessionUserName">Usuario</strong><small>Administrador</small></div>
+          </div>
+          <button class="icon-btn" id="logoutBtn" aria-label="Cerrar sesión" title="Cerrar sesión"><i class="bi bi-box-arrow-right"></i></button>
+        </div>
+      </header>
+
+      <div class="content-wrap">
+        <section class="app-view active" id="dashboardView">
+          <div class="welcome-card">
+            <div>
+              <span class="eyebrow text-white-50" id="currentDateLabel"></span>
+              <h2 id="welcomeTitle">Bienvenido a FixDesk.</h2>
+              <p>Tenés <strong id="welcomePending">0 reparaciones activas</strong> y <strong id="welcomeAppointments">0 turnos</strong> programados.</p>
+            </div>
+            <button class="btn btn-light action-btn" data-bs-toggle="modal" data-bs-target="#repairModal"><i class="bi bi-plus-lg"></i>Nueva reparación</button>
+          </div>
+
+          <div class="stats-grid" id="statsGrid"></div>
+
+          <div class="row g-4">
+            <div class="col-xl-8">
+              <div class="panel-card h-100">
+                <div class="panel-header">
+                  <div><span class="eyebrow">Agenda</span><h3>Próximos turnos</h3></div>
+                  <button class="text-btn" data-view="turnos">Ver todos <i class="bi bi-arrow-right"></i></button>
+                </div>
+                <div id="dashboardAppointments"></div>
+              </div>
+            </div>
+            <div class="col-xl-4">
+              <div class="panel-card h-100">
+                <div class="panel-header">
+                  <div><span class="eyebrow">Actividad</span><h3>Estado de equipos</h3></div>
+                </div>
+                <div id="repairSummary" class="repair-summary"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card mt-4">
+            <div class="panel-header">
+              <div><span class="eyebrow">Seguimiento</span><h3>Reparaciones recientes</h3></div>
+              <button class="text-btn" data-view="reparaciones">Gestionar equipos <i class="bi bi-arrow-right"></i></button>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-middle app-table">
+                <thead><tr><th>Orden</th><th>Cliente</th><th>Equipo</th><th>Ingreso</th><th>Estado</th><th></th></tr></thead>
+                <tbody id="dashboardRepairs"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="app-view" id="turnosView">
+          <div class="section-toolbar">
+            <div><span class="eyebrow">Organización</span><h2>Agenda de turnos</h2><p>Administrá las visitas y evitá superposiciones de horarios.</p></div>
+            <button class="btn btn-primary action-btn" data-bs-toggle="modal" data-bs-target="#appointmentModal"><i class="bi bi-calendar-plus"></i>Reservar turno</button>
+          </div>
+          <div class="panel-card">
+            <div class="filters-row">
+              <div class="search-box"><i class="bi bi-search"></i><input id="appointmentSearch" type="search" placeholder="Buscar cliente o motivo"></div>
+              <input class="form-control filter-control" id="appointmentDateFilter" type="date">
+            </div>
+            <div id="appointmentsList" class="appointment-list"></div>
+          </div>
+        </section>
+
+        <section class="app-view" id="clientesView">
+          <div class="section-toolbar">
+            <div><span class="eyebrow">Contactos</span><h2>Clientes registrados</h2><p>Centralizá los datos y consultá sus equipos rápidamente.</p></div>
+            <button class="btn btn-primary action-btn" data-bs-toggle="modal" data-bs-target="#clientModal"><i class="bi bi-person-plus"></i>Nuevo cliente</button>
+          </div>
+          <div class="panel-card">
+            <div class="filters-row">
+              <div class="search-box"><i class="bi bi-search"></i><input id="clientSearch" type="search" placeholder="Buscar por nombre, teléfono o email"></div>
+              <span class="result-count" id="clientCount"></span>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-middle app-table">
+                <thead><tr><th>Cliente</th><th>Contacto</th><th>Equipos</th><th>Último servicio</th><th></th></tr></thead>
+                <tbody id="clientsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="app-view" id="reparacionesView">
+          <div class="section-toolbar">
+            <div><span class="eyebrow">Taller</span><h2>Gestión de reparaciones</h2><p>Actualizá cada orden y mantené informado al cliente.</p></div>
+            <button class="btn btn-primary action-btn" data-bs-toggle="modal" data-bs-target="#repairModal"><i class="bi bi-plus-lg"></i>Nueva reparación</button>
+          </div>
+          <div class="status-filters" id="statusFilters"></div>
+          <div class="row g-4" id="repairsGrid"></div>
+        </section>
+
+        <section class="app-view" id="historialView">
+          <div class="section-toolbar">
+            <div><span class="eyebrow">Registro</span><h2>Historial de servicios</h2><p>Consultá las reparaciones finalizadas y los trabajos realizados.</p></div>
+            <button class="btn btn-outline-secondary action-btn" id="exportHistory"><i class="bi bi-download"></i>Exportar CSV</button>
+          </div>
+          <div class="panel-card">
+            <div class="filters-row">
+              <div class="search-box"><i class="bi bi-search"></i><input id="historySearch" type="search" placeholder="Buscar orden, cliente o equipo"></div>
+              <span class="result-count" id="historyCount"></span>
+            </div>
+            <div class="table-responsive">
+              <table class="table align-middle app-table">
+                <thead><tr><th>Orden</th><th>Cliente</th><th>Equipo</th><th>Trabajo realizado</th><th>Finalización</th><th>Total</th></tr></thead>
+                <tbody id="historyTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="appToast" class="toast border-0" role="status"><div class="toast-body d-flex align-items-center gap-2"><i class="bi bi-check-circle-fill"></i><span id="toastMessage"></span></div></div>
+  </div>
+
+  <div class="modal fade" id="clientModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><div><span class="eyebrow">Registro</span><h2 class="modal-title" id="clientModalTitle">Nuevo cliente</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <form id="clientForm"><div class="modal-body">
+        <input type="hidden" name="editId">
+        <div class="row g-3">
+          <div class="col-12"><label class="form-label" for="clientName">Nombre completo</label><input id="clientName" name="name" class="form-control" required></div>
+          <div class="col-md-6"><label class="form-label" for="clientPhone">Teléfono</label><input id="clientPhone" name="phone" class="form-control" required></div>
+          <div class="col-md-6"><label class="form-label" for="clientEmail">Email</label><input id="clientEmail" name="email" type="email" class="form-control" required></div>
+          <div class="col-12"><label class="form-label" for="clientAddress">Dirección</label><input id="clientAddress" name="address" class="form-control"></div>
+        </div>
+      </div><div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary" id="clientSubmitBtn">Guardar cliente</button></div></form>
+    </div></div>
+  </div>
+
+  <div class="modal fade" id="appointmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><div><span class="eyebrow">Agenda</span><h2 class="modal-title" id="appointmentModalTitle">Reservar turno</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <form id="appointmentForm"><div class="modal-body">
+        <input type="hidden" name="editId">
+        <div class="row g-3">
+          <div class="col-12"><label class="form-label" for="appointmentClient">Cliente</label><select id="appointmentClient" name="clientId" class="form-select client-select" required></select></div>
+          <div class="col-md-7"><label class="form-label" for="appointmentDate">Fecha</label><input id="appointmentDate" name="date" type="date" class="form-control" required></div>
+          <div class="col-md-5"><label class="form-label" for="appointmentTime">Hora</label><input id="appointmentTime" name="time" type="time" class="form-control" required></div>
+          <div class="col-12"><label class="form-label" for="appointmentReason">Motivo de la consulta</label><textarea id="appointmentReason" name="reason" class="form-control" rows="3" required></textarea></div>
+        </div>
+        <div class="form-hint"><i class="bi bi-info-circle"></i>Horarios disponibles para la fecha seleccionada:</div>
+        <div class="availability-slots" id="availabilitySlots"></div>
+      </div><div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary" id="appointmentSubmitBtn">Confirmar turno</button></div></form>
+    </div></div>
+  </div>
+
+  <div class="modal fade" id="repairModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><div><span class="eyebrow">Orden de trabajo</span><h2 class="modal-title">Nueva reparación</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <form id="repairForm"><div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label" for="repairClient">Cliente</label><select id="repairClient" name="clientId" class="form-select client-select" required></select></div>
+          <div class="col-md-6"><label class="form-label" for="repairDevice">Tipo de equipo</label><select id="repairDevice" name="device" class="form-select" required><option value="">Seleccionar...</option><option>Notebook</option><option>PC de escritorio</option><option>All in One</option><option>Otro</option></select></div>
+          <div class="col-md-6"><label class="form-label" for="repairModel">Marca y modelo</label><input id="repairModel" name="model" class="form-control" placeholder="Ej. Lenovo IdeaPad 3" required></div>
+          <div class="col-md-6"><label class="form-label" for="repairSerial">N.º de serie</label><input id="repairSerial" name="serial" class="form-control" placeholder="Opcional"></div>
+          <div class="col-12"><label class="form-label" for="repairIssue">Falla informada</label><textarea id="repairIssue" name="issue" class="form-control" rows="3" required></textarea></div>
+          <div class="col-md-6"><label class="form-label" for="repairPrice">Presupuesto estimado</label><div class="input-group"><span class="input-group-text">$</span><input id="repairPrice" name="price" type="number" min="0" class="form-control"></div></div>
+          <div class="col-md-6"><label class="form-label" for="repairStatus">Estado inicial</label><select id="repairStatus" name="status" class="form-select"><option>Recibido</option><option>En diagnóstico</option><option>En reparación</option><option>Esperando repuesto</option></select></div>
+          <div class="col-md-6"><label class="form-label" for="repairDeliveryDate">Fecha estimada de entrega</label><input id="repairDeliveryDate" name="deliveryDate" type="date" class="form-control"></div>
+        </div>
+      </div><div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary">Crear orden</button></div></form>
+    </div></div>
+  </div>
+
+  <div class="modal fade" id="trackingModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><div><span class="eyebrow">Seguimiento público</span><h2 class="modal-title">Consultar reparación</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+      <form id="trackingForm"><div class="modal-body">
+        <label class="form-label" for="trackingOrder">Número de orden</label>
+        <input id="trackingOrder" class="form-control" name="order" inputmode="numeric" placeholder="Ej. 1048" required>
+        <label class="form-label mt-3" for="trackingPhone">Teléfono del cliente</label>
+        <input id="trackingPhone" class="form-control" name="phone" placeholder="Ej. 11 5482-1930" required>
+        <div id="trackingResult" class="tracking-result d-none"></div>
+      </div><div class="modal-footer"><button type="button" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button><button class="btn btn-primary">Consultar estado</button></div></form>
+    </div></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
