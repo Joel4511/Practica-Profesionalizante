@@ -230,20 +230,22 @@ $("#authSwitch").addEventListener("click", () => {
 
 $("#registerForm").addEventListener("submit", async event => {
   event.preventDefault();
-  const values = Object.fromEntries(new FormData(event.currentTarget));
+  const form = event.currentTarget;
+  const values = Object.fromEntries(new FormData(form));
   try {
     await api("/api/auth/register", { method: "POST", body: JSON.stringify(values) });
-    event.currentTarget.reset();
+    form.reset();
     await loadSession();
   } catch (error) { showToast(error.message, true); }
 });
 
 $("#loginForm").addEventListener("submit", async event => {
   event.preventDefault();
-  const values = Object.fromEntries(new FormData(event.currentTarget));
+  const form = event.currentTarget;
+  const values = Object.fromEntries(new FormData(form));
   try {
     await api("/api/auth/login", { method: "POST", body: JSON.stringify(values) });
-    event.currentTarget.reset();
+    form.reset();
     await loadSession();
   } catch (error) { showToast(error.message, true); }
 });
@@ -269,9 +271,10 @@ $("#requestDate").addEventListener("change", renderClientTimeOptions);
 
 $("#clientRequestForm").addEventListener("submit", async event => {
   event.preventDefault();
+  const form = event.currentTarget;
   try {
-    await api("/api/client/appointments", { method: "POST", body: JSON.stringify(Object.fromEntries(new FormData(event.currentTarget))) });
-    event.currentTarget.reset();
+    await api("/api/client/appointments", { method: "POST", body: JSON.stringify(Object.fromEntries(new FormData(form))) });
+    form.reset();
     showToast("Tu turno fue solicitado correctamente");
     await loadClientPortal();
   } catch (error) { showToast(error.message, true); }
@@ -279,8 +282,9 @@ $("#clientRequestForm").addEventListener("submit", async event => {
 
 $("#clientProfileForm").addEventListener("submit", async event => {
   event.preventDefault();
+  const form = event.currentTarget;
   try {
-    await api("/api/client/profile", { method: "PUT", body: JSON.stringify(Object.fromEntries(new FormData(event.currentTarget))) });
+    await api("/api/client/profile", { method: "PUT", body: JSON.stringify(Object.fromEntries(new FormData(form))) });
     showToast("Tus datos fueron actualizados");
     await loadClientPortal();
   } catch (error) { showToast(error.message, true); }
@@ -332,32 +336,35 @@ document.addEventListener("click", async event => {
 
 $("#clientForm").addEventListener("submit", async event => {
   event.preventDefault();
-  const values = Object.fromEntries(new FormData(event.currentTarget));
+  const form = event.currentTarget;
+  const values = Object.fromEntries(new FormData(form));
   const id = values.editId; delete values.editId;
   try {
     await api(id ? `/api/admin/clients/${id}` : "/api/admin/clients", { method: id ? "PUT" : "POST", body: JSON.stringify(values) });
-    bootstrap.Modal.getInstance($("#clientModal")).hide(); event.currentTarget.reset(); await loadAdmin(); showToast("Cliente guardado");
+    bootstrap.Modal.getInstance($("#clientModal")).hide(); form.reset(); await loadAdmin(); showToast("Cliente guardado");
   } catch (error) { showToast(error.message, true); }
 });
 
 $("#appointmentForm").addEventListener("submit", async event => {
   event.preventDefault();
-  const values = Object.fromEntries(new FormData(event.currentTarget));
+  const form = event.currentTarget;
+  const values = Object.fromEntries(new FormData(form));
   const id = values.editId;
   const payload = { clientId: values.clientId, date: values.date, time: values.time, problem: values.reason, status: "CONFIRMADO" };
   try {
     await api(id ? `/api/admin/appointments/${id}` : "/api/admin/appointments", { method: id ? "PUT" : "POST", body: JSON.stringify(payload) });
-    bootstrap.Modal.getInstance($("#appointmentModal")).hide(); event.currentTarget.reset(); await loadAdmin(); showToast("Turno guardado");
+    bootstrap.Modal.getInstance($("#appointmentModal")).hide(); form.reset(); await loadAdmin(); showToast("Turno guardado");
   } catch (error) { showToast(error.message, true); }
 });
 
 $("#repairForm").addEventListener("submit", async event => {
   event.preventDefault();
-  const values = Object.fromEntries(new FormData(event.currentTarget));
+  const form = event.currentTarget;
+  const values = Object.fromEntries(new FormData(form));
   values.status = statusValues[values.status] || "RECIBIDO";
   try {
     await api("/api/admin/repairs", { method: "POST", body: JSON.stringify(values) });
-    bootstrap.Modal.getInstance($("#repairModal")).hide(); event.currentTarget.reset(); await loadAdmin(); showToast("Orden creada");
+    bootstrap.Modal.getInstance($("#repairModal")).hide(); form.reset(); await loadAdmin(); showToast("Orden creada");
   } catch (error) { showToast(error.message, true); }
 });
 
