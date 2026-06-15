@@ -26,6 +26,12 @@ async function api(url, options = {}) {
   });
   if (response.status === 204) return null;
   const payload = await response.json().catch(() => ({}));
+  if (response.status === 401 && !url.startsWith("/api/auth/")) {
+    state.user = null;
+    state.client = null;
+    showAuth();
+    throw new Error("Tu sesión venció. Iniciá sesión nuevamente.");
+  }
   if (!response.ok) throw new Error(payload.error || "No se pudo completar la operación.");
   return payload;
 }
