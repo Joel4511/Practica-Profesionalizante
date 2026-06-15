@@ -60,6 +60,17 @@ app.post("/api/auth/register", asyncRoute(async (req, res) => {
     return res.status(400).json({ error: "Completá todos los datos. La contraseña debe tener al menos 8 caracteres." });
   }
 
+  const existing = await db.query(
+    `SELECT email FROM users WHERE email = $1
+     UNION
+     SELECT email FROM clients WHERE email = $1
+     LIMIT 1`,
+    [email]
+  );
+  if (existing.rowCount) {
+    return res.status(409).json({ error: "Ya tenés una cuenta creada con ese Gmail. Iniciá sesión para continuar." });
+  }
+
   const passwordHash = await bcrypt.hash(password, 12);
   const connection = await db.pool.connect();
   try {
@@ -80,7 +91,7 @@ app.post("/api/auth/register", asyncRoute(async (req, res) => {
     res.status(201).json({ user: { ...user, clientId: clientResult.rows[0].id } });
   } catch (error) {
     await connection.query("ROLLBACK");
-    if (error.code === "23505") return res.status(409).json({ error: "Ya existe una cuenta con ese email." });
+    if (error.code === "23505") return res.status(409).json({ error: "Ya tenés una cuenta creada con ese Gmail. Iniciá sesión para continuar." });
     throw error;
   } finally {
     connection.release();
