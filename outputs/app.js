@@ -224,7 +224,7 @@ $("#authSwitch").addEventListener("click", () => {
   const registering = $("#registerForm").classList.contains("d-none");
   $("#registerForm").classList.toggle("d-none", !registering);
   $("#loginForm").classList.toggle("d-none", registering);
-  $("#authTitle").textContent = registering ? "Crear cuenta" : "Iniciar sesión";
+  $("#authTitle").textContent = registering ? "Crear cuenta de cliente" : "Iniciar sesión";
   $("#authSwitch").textContent = registering ? "¿Ya tenés cuenta? Iniciá sesión" : "¿No tenés cuenta? Registrate";
 });
 

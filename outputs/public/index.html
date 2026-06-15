@@ -19,7 +19,7 @@
     <div class="auth-card">
       <span class="eyebrow">Acceso seguro</span>
       <h1 id="authTitle">Iniciar sesión</h1>
-      <p id="authSubtitle">Ingresá con tu cuenta para administrar el taller.</p>
+      <p id="authSubtitle">Ingresá con tu cuenta para acceder al sistema.</p>
       <form id="loginForm" class="auth-form">
         <label class="form-label" for="loginEmail">Email</label>
         <input class="form-control" id="loginEmail" name="email" type="email" required>
@@ -28,10 +28,6 @@
         <button class="btn btn-primary w-100">Ingresar</button>
       </form>
       <form id="registerForm" class="auth-form d-none">
-        <label class="form-label" for="registerRole">Tipo de cuenta</label>
-        <select class="form-select" id="registerRole" name="role" required>
-          <option value="client">Cliente</option>
-        </select>
         <label class="form-label" for="registerName">Nombre completo</label>
         <input class="form-control" id="registerName" name="name" required>
         <label class="form-label" for="registerEmail">Email</label>
@@ -42,7 +38,7 @@
         </div>
         <label class="form-label" for="registerPassword">Contraseña</label>
         <input class="form-control" id="registerPassword" name="password" type="password" minlength="6" required>
-        <button class="btn btn-primary w-100">Crear cuenta</button>
+        <button class="btn btn-primary w-100">Crear cuenta de cliente</button>
       </form>
       <button class="auth-switch" id="authSwitch">¿No tenés cuenta? Registrate</button>
       <div class="auth-divider"><span>o</span></div>
