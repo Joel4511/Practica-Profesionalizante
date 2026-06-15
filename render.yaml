@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: tgt-servicio-tecnico
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: outputs/Dockerfile
+    dockerContext: outputs
+    healthCheckPath: /api/health
+    preDeployCommand: npm run db:migrate
+    initialDeployHook: npm run admin:create
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tgt-postgres
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_NAME
+        value: Administrador TGT
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
+databases:
+  - name: tgt-postgres
+    plan: free
+    region: oregon
