@@ -31,7 +31,6 @@
         <label class="form-label" for="registerRole">Tipo de cuenta</label>
         <select class="form-select" id="registerRole" name="role" required>
           <option value="client">Cliente</option>
-          <option value="admin">Técnico / administrador</option>
         </select>
         <label class="form-label" for="registerName">Nombre completo</label>
         <input class="form-control" id="registerName" name="name" required>
@@ -48,7 +47,7 @@
       <button class="auth-switch" id="authSwitch">¿No tenés cuenta? Registrate</button>
       <div class="auth-divider"><span>o</span></div>
       <button class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#trackingModal"><i class="bi bi-search me-2"></i>Consultar mi reparación</button>
-      <small class="security-note"><i class="bi bi-shield-lock"></i> Las contraseñas se guardan como hash SHA-256 en esta demo.</small>
+      <small class="security-note"><i class="bi bi-shield-lock"></i> Tus datos se envían al servidor y la contraseña se protege con bcrypt.</small>
     </div>
   </section>
 

@@ -143,10 +143,64 @@ npm start
 
 8. Activá HTTPS, dominio propio, monitoreo y backups.
 
+## Publicación en Vercel con base de datos
+
+El proyecto ya está preparado para Vercel con:
+
+- `api/index.js`: entrada serverless para Express.
+- `vercel.json`: envía todas las rutas a la aplicación.
+- `.env.vercel.example`: variables necesarias para producción.
+- `database/schema.sql`: estructura completa de PostgreSQL.
+
+### 1. Crear la base PostgreSQL
+
+En Vercel podés crear una base desde **Storage** usando Postgres, o conectar una base PostgreSQL externa como Neon, Supabase o Railway.
+
+Copiá la cadena de conexión de producción y cargala en Vercel como variable:
+
+```env
+DATABASE_URL=postgresql://usuario:password@host:5432/base?sslmode=require
+```
+
+También agregá estas variables en **Project Settings > Environment Variables**:
+
+```env
+NODE_ENV=production
+DB_POOL_MAX=5
+JWT_SECRET=una-clave-aleatoria-muy-larga-y-privada
+ADMIN_NAME=Administrador TGT
+ADMIN_EMAIL=tu-email
+ADMIN_PASSWORD=una-clave-segura
+```
+
+### 2. Crear las tablas
+
+Después de configurar `DATABASE_URL`, ejecutá una sola vez:
+
+```powershell
+npm run db:migrate
+```
+
+Para hacerlo desde tu computadora contra la base de Vercel, podés crear temporalmente un `.env` local con la `DATABASE_URL` de producción y luego correr el comando. No subas ese `.env` a GitHub.
+
+### 3. Crear el administrador
+
+Con las variables `ADMIN_NAME`, `ADMIN_EMAIL` y `ADMIN_PASSWORD` configuradas:
+
+```powershell
+npm run admin:create
+```
+
+### 4. Desplegar
+
+Conectá el repositorio en Vercel y desplegá. Vercel usará `api/index.js`, por eso no hace falta cambiar el frontend ni las rutas `/api/...`.
+
 ## Estructura
 
 ```text
 outputs/
+  api/
+    index.js
   database/schema.sql
   public/
     index.html

@@ -372,4 +372,8 @@ app.use((error, _req, res, _next) => {
   res.status(500).json({ error: "Ocurrió un error interno." });
 });
 
-app.listen(port, () => console.log(`TGT disponible en http://localhost:${port}`));
+if (require.main === module) {
+  app.listen(port, () => console.log(`TGT disponible en http://localhost:${port}`));
+}
+
+module.exports = app;
