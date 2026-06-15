@@ -323,10 +323,7 @@ app.post("/api/admin/appointments", requireAuth, requireRole("ADMIN"), asyncRout
 }));
 
 app.delete("/api/admin/appointments/:id", requireAuth, requireRole("ADMIN"), asyncRoute(async (req, res) => {
-  const result = await db.query(
-    "UPDATE appointments SET status = 'CANCELADO', updated_at = NOW() WHERE id = $1 RETURNING id",
-    [req.params.id]
-  );
+  const result = await db.query("DELETE FROM appointments WHERE id = $1 RETURNING id", [req.params.id]);
   if (!result.rowCount) return res.status(404).json({ error: "Turno no encontrado" });
   res.status(204).end();
 }));
@@ -350,18 +347,44 @@ app.post("/api/admin/repairs", requireAuth, requireRole("ADMIN"), asyncRoute(asy
 app.patch("/api/admin/repairs/:id", requireAuth, requireRole("ADMIN"), asyncRoute(async (req, res) => {
   const status = clean(req.body.status);
   if (status && !repairStatuses.has(status)) return res.status(400).json({ error: "Estado inválido." });
-  const result = await db.query(
-    `UPDATE repairs SET
-       status = COALESCE($1, status),
-       estimated_delivery_date = COALESCE($2, estimated_delivery_date),
-       technical_work = COALESCE($3, technical_work),
-       completed_date = CASE WHEN $1 = 'FINALIZADO' THEN COALESCE(completed_date, CURRENT_DATE) ELSE completed_date END,
-       updated_at = NOW()
-     WHERE id = $4 RETURNING id`,
-    [status || null, req.body.deliveryDate || null, clean(req.body.work) || null, req.params.id]
-  );
-  if (!result.rowCount) return res.status(404).json({ error: "Reparación no encontrada" });
-  res.json({ id: result.rows[0].id });
+  const connection = await db.pool.connect();
+  try {
+    await connection.query("BEGIN");
+    const result = await connection.query(
+      `UPDATE repairs SET
+         status = COALESCE($1, status),
+         estimated_delivery_date = COALESCE($2, estimated_delivery_date),
+         technical_work = COALESCE($3, technical_work),
+         completed_date = CASE WHEN $1 = 'FINALIZADO' THEN COALESCE(completed_date, CURRENT_DATE) ELSE completed_date END,
+         updated_at = NOW()
+       WHERE id = $4 RETURNING id, client_id`,
+      [status || null, req.body.deliveryDate || null, clean(req.body.work) || null, req.params.id]
+    );
+    if (!result.rowCount) {
+      await connection.query("ROLLBACK");
+      return res.status(404).json({ error: "Reparación no encontrada" });
+    }
+    if (status === "FINALIZADO") {
+      await connection.query(
+        `UPDATE appointments SET status = 'CANCELADO', updated_at = NOW()
+         WHERE client_id = $1 AND appointment_date >= CURRENT_DATE AND status <> 'CANCELADO'`,
+        [result.rows[0].client_id]
+      );
+    }
+    await connection.query("COMMIT");
+    res.json({ id: result.rows[0].id });
+  } catch (error) {
+    await connection.query("ROLLBACK");
+    throw error;
+  } finally {
+    connection.release();
+  }
+}));
+
+app.delete("/api/admin/repairs/:id", requireAuth, requireRole("ADMIN"), asyncRoute(async (req, res) => {
+  const result = await db.query("DELETE FROM repairs WHERE id = $1 RETURNING id", [req.params.id]);
+  if (!result.rowCount) return res.status(404).json({ error: "Orden no encontrada" });
+  res.status(204).end();
 }));
 
 app.use("/api", (_req, res) => res.status(404).json({ error: "Ruta no encontrada" }));

@@ -186,7 +186,7 @@ function renderAppointments() {
   const query = ($("#appointmentSearch").value || "").toLowerCase();
   const date = $("#appointmentDateFilter").value;
   const items = state.appointments.filter(item => (!date || String(item.date).slice(0, 10) === date) && `${item.client_name} ${item.problem}`.toLowerCase().includes(query));
-  $("#appointmentsList").innerHTML = items.map(item => `<article class="appointment-card"><div><div class="appointment-time">${item.time}</div><div class="appointment-day">${formatDate(item.date)}</div></div><div class="appointment-info"><strong>${item.client_name}</strong><span>${item.problem} · ${item.phone}</span><div class="request-detail"><span class="status-badge ${statusClass(item.status)}">${statusLabels[item.status]}</span></div></div><div class="row-actions"><button class="more-btn edit-appointment" data-id="${item.id}" title="Modificar turno"><i class="bi bi-pencil"></i></button><button class="more-btn danger delete-appointment" data-id="${item.id}" title="Cancelar turno"><i class="bi bi-trash3"></i></button></div></article>`).join("") || emptyState("No se encontraron turnos");
+  $("#appointmentsList").innerHTML = items.map(item => `<article class="appointment-card"><div><div class="appointment-time">${item.time}</div><div class="appointment-day">${formatDate(item.date)}</div></div><div class="appointment-info"><strong>${item.client_name}</strong><span>${item.problem} · ${item.phone}</span><div class="request-detail"><span class="status-badge ${statusClass(item.status)}">${statusLabels[item.status]}</span></div></div><div class="row-actions"><button class="more-btn edit-appointment" data-id="${item.id}" title="Modificar turno"><i class="bi bi-pencil"></i></button><button class="more-btn danger delete-appointment" data-id="${item.id}" title="Eliminar turno definitivamente"><i class="bi bi-trash3"></i></button></div></article>`).join("") || emptyState("No se encontraron turnos");
 }
 
 function renderClients() {
@@ -203,14 +203,14 @@ function renderRepairs() {
 
 function renderRepairCards(filter) {
   const items = state.repairs.filter(item => filter === "ALL" || item.status === filter);
-  $("#repairsGrid").innerHTML = items.map(item => `<div class="col-md-6 col-xl-4"><article class="repair-card"><div class="repair-card-top"><span class="device-icon"><i class="bi bi-laptop"></i></span><span class="order-code">#${item.id}</span></div><h3>${item.model}</h3><div class="model">${item.device} · ${item.serial || "Sin número de serie"}</div><div class="issue-box"><strong>Falla:</strong> ${item.issue}</div><div class="repair-meta"><div><span>Cliente</span><strong>${item.client_name}</strong></div><div class="text-end"><span>Presupuesto</span><strong>${money(item.price)}</strong></div></div><div class="delivery-field"><label>Fecha de entrega</label><input class="form-control repair-delivery" data-id="${item.id}" type="date" value="${String(item.delivery_date || "").slice(0, 10)}"></div><div class="repair-actions"><select class="form-select repair-status" data-id="${item.id}">${repairStatuses.map(status => `<option value="${status}" ${status === item.status ? "selected" : ""}>${statusLabels[status]}</option>`).join("")}</select></div></article></div>`).join("") || `<div class="col-12">${emptyState("No hay reparaciones en este estado")}</div>`;
+  $("#repairsGrid").innerHTML = items.map(item => `<div class="col-md-6 col-xl-4"><article class="repair-card"><div class="repair-card-top"><span class="device-icon"><i class="bi bi-laptop"></i></span><span class="order-code">#${item.id}</span></div><h3>${item.model}</h3><div class="model">${item.device} · ${item.serial || "Sin número de serie"}</div><div class="issue-box"><strong>Falla:</strong> ${item.issue}</div><div class="repair-meta"><div><span>Cliente</span><strong>${item.client_name}</strong></div><div class="text-end"><span>Presupuesto</span><strong>${money(item.price)}</strong></div></div><div class="delivery-field"><label>Fecha de entrega</label><input class="form-control repair-delivery" data-id="${item.id}" type="date" value="${String(item.delivery_date || "").slice(0, 10)}"></div><div class="repair-actions"><select class="form-select repair-status" data-id="${item.id}">${repairStatuses.map(status => `<option value="${status}" ${status === item.status ? "selected" : ""}>${statusLabels[status]}</option>`).join("")}</select><button class="more-btn danger delete-repair" data-id="${item.id}" title="Eliminar orden definitivamente"><i class="bi bi-trash3"></i></button></div></article></div>`).join("") || `<div class="col-12">${emptyState("No hay reparaciones en este estado")}</div>`;
 }
 
 function renderHistory() {
   const query = ($("#historySearch").value || "").toLowerCase();
   const items = state.repairs.filter(item => item.status === "FINALIZADO" && `${item.id} ${item.client_name} ${item.model}`.toLowerCase().includes(query));
   $("#historyCount").textContent = `${items.length} servicios finalizados`;
-  $("#historyTable").innerHTML = items.map(item => `<tr><td><span class="order-code">#${item.id}</span></td><td>${item.client_name}</td><td>${item.device} ${item.model}</td><td>${item.work || item.issue}</td><td>${formatDate(item.completed_date)}</td><td>${money(item.price)}</td></tr>`).join("");
+  $("#historyTable").innerHTML = items.map(item => `<tr><td><span class="order-code">#${item.id}</span></td><td>${item.client_name}</td><td>${item.device} ${item.model}</td><td>${item.work || item.issue}</td><td>${formatDate(item.completed_date)}</td><td>${money(item.price)}</td><td><button class="more-btn danger delete-repair" data-id="${item.id}" title="Eliminar orden del historial"><i class="bi bi-trash3"></i></button></td></tr>`).join("");
 }
 
 function setView(view) {
@@ -335,7 +335,14 @@ document.addEventListener("click", async event => {
   }
   const deleteAppointment = event.target.closest(".delete-appointment");
   if (deleteAppointment) {
-    try { await api(`/api/admin/appointments/${deleteAppointment.dataset.id}`, { method: "DELETE" }); await loadAdmin(); showToast("Turno cancelado"); }
+    if (!confirm("¿Eliminar este turno definitivamente?")) return;
+    try { await api(`/api/admin/appointments/${deleteAppointment.dataset.id}`, { method: "DELETE" }); await loadAdmin(); showToast("Turno eliminado"); }
+    catch (error) { showToast(error.message, true); }
+  }
+  const deleteRepair = event.target.closest(".delete-repair");
+  if (deleteRepair) {
+    if (!confirm("¿Eliminar esta orden definitivamente? También desaparecerá del historial.")) return;
+    try { await api(`/api/admin/repairs/${deleteRepair.dataset.id}`, { method: "DELETE" }); await loadAdmin(); showToast("Orden eliminada"); }
     catch (error) { showToast(error.message, true); }
   }
 });
