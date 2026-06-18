@@ -333,12 +333,6 @@ app.post("/api/admin/appointments", requireAuth, requireRole("ADMIN"), asyncRout
   }
 }));
 
-app.delete("/api/admin/appointments/:id", requireAuth, requireRole("ADMIN"), asyncRoute(async (req, res) => {
-  const result = await db.query("DELETE FROM appointments WHERE id = $1 RETURNING id", [req.params.id]);
-  if (!result.rowCount) return res.status(404).json({ error: "Turno no encontrado" });
-  res.status(204).end();
-}));
-
 app.post("/api/admin/repairs", requireAuth, requireRole("ADMIN"), asyncRoute(async (req, res) => {
   const clientId = Number(req.body.clientId);
   const device = clean(req.body.device);
@@ -390,12 +384,6 @@ app.patch("/api/admin/repairs/:id", requireAuth, requireRole("ADMIN"), asyncRout
   } finally {
     connection.release();
   }
-}));
-
-app.delete("/api/admin/repairs/:id", requireAuth, requireRole("ADMIN"), asyncRoute(async (req, res) => {
-  const result = await db.query("DELETE FROM repairs WHERE id = $1 RETURNING id", [req.params.id]);
-  if (!result.rowCount) return res.status(404).json({ error: "Orden no encontrada" });
-  res.status(204).end();
 }));
 
 app.use("/api", (_req, res) => res.status(404).json({ error: "Ruta no encontrada" }));

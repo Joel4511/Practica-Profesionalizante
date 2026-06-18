@@ -11,7 +11,43 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <section class="auth-screen" id="authScreen">
+  <section class="auth-screen public-site" id="authScreen">
+    <header class="public-nav">
+      <a class="public-brand" href="#inicio">Taller de PC Gamer</a>
+      <nav aria-label="Navegación pública">
+        <a href="#inicio">Inicio</a>
+        <button type="button" data-open-auth="register">Regístrate</button>
+        <button type="button" data-open-auth="login">Iniciar Sesión</button>
+        <button type="button" data-open-auth="login">Administrar Reparaciones</button>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#trackingModal">Estado de Reparación</button>
+        <button type="button" data-open-auth="register">Turnos</button>
+        <button class="public-search" type="button" aria-label="Buscar reparación" data-bs-toggle="modal" data-bs-target="#trackingModal"><i class="bi bi-search"></i></button>
+      </nav>
+    </header>
+    <main id="inicio">
+      <section class="public-hero">
+        <div class="hero-frame"><h1>Técnico Gamer<br>Turnos</h1></div>
+        <p>Repara tu PC con Nosotros</p>
+      </section>
+      <section class="public-actions" aria-label="Accesos principales">
+        <button class="public-action" type="button" data-open-auth="login">Iniciar Sesión</button>
+        <button class="public-action" type="button" data-open-auth="register">Regístrate</button>
+      </section>
+      <section class="public-intro">
+        <img src="assets/repair-workbench.png" alt="Técnico reparando una computadora">
+        <h2>Tu computadora en manos expertas. Reservá tu turno fácil y rápido.</h2>
+      </section>
+      <section class="public-feature-grid">
+        <article><img src="assets/turnos-calendar.png" alt="Calendario de turnos"><button type="button" data-open-auth="register">Turnos</button></article>
+        <article><img src="assets/repair-status.png" alt="Estado de reparación"><button type="button" data-bs-toggle="modal" data-bs-target="#trackingModal">Estado del Turno</button></article>
+      </section>
+    </main>
+    <footer class="public-footer">
+      <section><h2>Ubicación</h2><p>Benavides y salta 362 sur</p></section>
+      <section><h2>Contacto</h2><p>Telefono: 44563879</p><p>Whatsapp: 2645358946</p></section>
+      <section><h2>Redes</h2><p>Instagram: rep.gamer</p><p>Facebook: rep.gamer</p></section>
+    </footer>
+    <div class="public-copy">| Joel Villegas | 2645784901 | villegasjoaquinjoel@gmail.com |</div>
     <div class="auth-brand">
       <span class="brand-mark"><i class="bi bi-cpu"></i></span>
       <div><strong>TGT</strong><small>Gestión de servicio técnico</small></div>
@@ -24,7 +60,7 @@
         <label class="form-label" for="loginEmail">Email</label>
         <input class="form-control" id="loginEmail" name="email" type="email" required>
         <label class="form-label" for="loginPassword">Contraseña</label>
-        <input class="form-control" id="loginPassword" name="password" type="password" minlength="6" required>
+        <input class="form-control" id="loginPassword" name="password" type="password" minlength="8" required>
         <button class="btn btn-primary w-100">Ingresar</button>
       </form>
       <form id="registerForm" class="auth-form d-none">
@@ -37,7 +73,7 @@
           <div class="col-sm-6"><label class="form-label" for="registerAddress">Dirección</label><input class="form-control" id="registerAddress" name="address" required></div>
         </div>
         <label class="form-label" for="registerPassword">Contraseña</label>
-        <input class="form-control" id="registerPassword" name="password" type="password" minlength="6" required>
+        <input class="form-control" id="registerPassword" name="password" type="password" minlength="8" required>
         <button class="btn btn-primary w-100">Crear cuenta de cliente</button>
       </form>
       <button class="auth-switch" id="authSwitch">¿No tenés cuenta? Registrate</button>
@@ -119,7 +155,6 @@
         <button class="nav-link" data-view="turnos"><i class="bi bi-calendar2-week"></i><span>Turnos</span></button>
         <button class="nav-link" data-view="clientes"><i class="bi bi-people"></i><span>Clientes</span></button>
         <button class="nav-link" data-view="reparaciones"><i class="bi bi-tools"></i><span>Reparaciones</span></button>
-        <button class="nav-link" data-view="historial"><i class="bi bi-clock-history"></i><span>Historial</span></button>
       </nav>
     </aside>
 
@@ -207,7 +242,7 @@
           </div>
           <div class="panel-card">
             <div class="filters-row">
-              <div class="search-box"><i class="bi bi-search"></i><input id="clientSearch" type="search" placeholder="Buscar por nombre, teléfono o email"></div>
+              <div class="search-box"><i class="bi bi-search"></i><input id="clientSearch" type="search" placeholder="Buscar por nombre o telefono"></div>
               <span class="result-count" id="clientCount"></span>
             </div>
             <div class="table-responsive">
@@ -228,24 +263,7 @@
           <div class="row g-4" id="repairsGrid"></div>
         </section>
 
-        <section class="app-view" id="historialView">
-          <div class="section-toolbar">
-            <div><span class="eyebrow">Registro</span><h2>Historial de servicios</h2><p>Consultá las reparaciones finalizadas y los trabajos realizados.</p></div>
-          </div>
-          <div class="panel-card">
-            <div class="filters-row">
-              <div class="search-box"><i class="bi bi-search"></i><input id="historySearch" type="search" placeholder="Buscar orden, cliente o equipo"></div>
-              <span class="result-count" id="historyCount"></span>
-            </div>
-            <div class="table-responsive">
-              <table class="table align-middle app-table">
-                <thead><tr><th>Orden</th><th>Cliente</th><th>Equipo</th><th>Trabajo realizado</th><th>Finalización</th><th>Total</th><th></th></tr></thead>
-                <tbody id="historyTable"></tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-      </div>
+        </div>
     </main>
   </div>
 
@@ -296,7 +314,6 @@
           <div class="col-md-6"><label class="form-label" for="repairModel">Marca y modelo</label><input id="repairModel" name="model" class="form-control" placeholder="Ej. Lenovo IdeaPad 3" required></div>
           <div class="col-md-6"><label class="form-label" for="repairSerial">N.º de serie</label><input id="repairSerial" name="serial" class="form-control" placeholder="Opcional"></div>
           <div class="col-12"><label class="form-label" for="repairIssue">Falla informada</label><textarea id="repairIssue" name="issue" class="form-control" rows="3" required></textarea></div>
-          <div class="col-md-6"><label class="form-label" for="repairPrice">Presupuesto estimado</label><div class="input-group"><span class="input-group-text">$</span><input id="repairPrice" name="price" type="number" min="0" class="form-control"></div></div>
           <div class="col-md-6"><label class="form-label" for="repairStatus">Estado inicial</label><select id="repairStatus" name="status" class="form-select"><option>Recibido</option><option>En diagnóstico</option><option>En reparación</option><option>Esperando repuesto</option></select></div>
           <div class="col-md-6"><label class="form-label" for="repairDeliveryDate">Fecha estimada de entrega</label><input id="repairDeliveryDate" name="deliveryDate" type="date" class="form-control"></div>
         </div>
