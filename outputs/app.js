@@ -395,18 +395,6 @@ $("#appointmentSearch").addEventListener("input", renderAppointments);
 $("#appointmentDateFilter").addEventListener("change", renderAppointments);
 $("#clientSearch").addEventListener("input", renderClients);
 $("#historySearch").addEventListener("input", renderHistory);
-$("#exportHistory").addEventListener("click", () => {
-  const rows = [["Orden", "Cliente", "Equipo", "Trabajo", "Finalización", "Total"]];
-  state.repairs.filter(item => item.status === "FINALIZADO").forEach(item => {
-    rows.push([item.id, item.client_name, `${item.device} ${item.model}`, item.work || item.issue, String(item.completed_date || "").slice(0, 10), item.price]);
-  });
-  const csv = rows.map(row => row.map(value => `"${String(value || "").replaceAll('"', '""')}"`).join(",")).join("\n");
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" }));
-  link.download = "historial-tgt.csv";
-  link.click();
-  URL.revokeObjectURL(link.href);
-});
 $("#clientModal").addEventListener("show.bs.modal", event => {
   if (!event.relatedTarget) return;
   $("#clientForm").reset();

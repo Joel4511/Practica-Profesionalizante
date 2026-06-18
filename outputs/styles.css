@@ -179,6 +179,47 @@ button, input, select, textarea { font: inherit; }
 .toast { color: #fff; background: var(--success); }
 .sidebar-backdrop { display: none; }
 
+/* Tema visual: taller gamer oscuro, manteniendo la estructura funcional del proyecto. */
+:root {
+  --primary: #00e676;
+  --primary-dark: #00b85f;
+  --navy: #05070d;
+  --text: #e8f7ef;
+  --muted: #91a39b;
+  --border: #20362d;
+  --surface: #101820;
+  --background: #070b10;
+  --success: #00e676;
+  --warning: #ffd166;
+  --danger: #ff4d6d;
+  --info: #00c2ff;
+}
+body { background: var(--background); color: var(--text); }
+.auth-screen { background: linear-gradient(135deg, #05070d 0%, #07110f 54%, #10281f 100%); }
+.auth-card, .panel-card, .stat-card, .repair-card, .client-repair-card, .modal-content { background: var(--surface); border-color: var(--border); color: var(--text); box-shadow: 0 18px 45px rgba(0,0,0,.22); }
+.auth-card > p, .section-toolbar p, .item-subtitle, .appointment-info span, .client-repair-card p, .tracking-result p { color: var(--muted); }
+.sidebar, .client-header { background: #05070d; border-right: 1px solid var(--border); }
+.topbar { background: rgba(7,11,16,.94); border-color: var(--border); }
+.brand-mark, .welcome-card, .client-hero { background: linear-gradient(135deg, #00e676, #00c2ff); color: #041009; box-shadow: 0 12px 30px rgba(0,230,118,.22); }
+.welcome-card p, .client-hero p { color: rgba(4,16,9,.72); }
+.welcome-card .eyebrow, .client-hero .eyebrow { color: rgba(4,16,9,.65) !important; }
+.form-control, .form-select, .input-group-text, .search-box input { background: #0a1118; border-color: var(--border); color: var(--text); }
+.form-control:focus, .form-select:focus, .search-box input:focus { background: #0d1720; color: var(--text); border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,230,118,.14); }
+.form-control::placeholder, .search-box input::placeholder { color: #65756f; }
+.btn-primary { --bs-btn-bg: var(--primary); --bs-btn-border-color: var(--primary); --bs-btn-color: #041009; --bs-btn-hover-bg: var(--primary-dark); --bs-btn-hover-border-color: var(--primary-dark); --bs-btn-hover-color: #041009; }
+.btn-light, .btn-outline-primary { color: #041009; border-color: var(--primary); background: var(--primary); }
+.text-btn, .auth-switch, .order-code, .appointment-time { color: var(--primary); }
+.app-table th, .app-table td, .dashboard-appointment, .repair-meta, .modal-header, .modal-footer { border-color: var(--border); color: var(--text); }
+.date-box, .client-avatar, .avatar, .device-icon, .stat-icon.purple { background: rgba(0,230,118,.12); color: var(--primary); }
+.stat-icon.blue { background: rgba(0,194,255,.12); color: var(--info); }
+.stat-icon.orange { background: rgba(255,209,102,.12); color: var(--warning); }
+.stat-icon.green { background: rgba(0,230,118,.12); color: var(--success); }
+.issue-box, .form-hint, .time-chip, .filter-pill { background: #0a1118; border-color: var(--border); color: var(--text); }
+.filter-pill.active { background: var(--primary); border-color: var(--primary); color: #041009; }
+.tracking-result { background: rgba(0,230,118,.08); border-color: var(--border); }
+.slot { background: #0a1118; border-color: var(--border); color: var(--primary); }
+.slot.busy { background: #151920; color: #65756f; }
+
 @media (max-width: 1100px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
 }
