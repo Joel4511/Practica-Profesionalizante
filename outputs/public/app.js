@@ -66,9 +66,9 @@ function openAuthDialog(mode = "login") {
   $("#authScreen").classList.add("auth-dialog-open");
   $("#registerForm").classList.toggle("d-none", !registering);
   $("#loginForm").classList.toggle("d-none", registering);
-  $("#authTitle").textContent = registering ? "Crear cuenta de cliente" : "Iniciar sesi?n";
-  $("#authSubtitle").textContent = registering ? "Registrate para pedir turnos y consultar tus reparaciones." : "Ingres? con tu cuenta para acceder al sistema.";
-  $("#authSwitch").textContent = registering ? "?Ya ten?s cuenta? Inici? sesi?n" : "?No ten?s cuenta? Registrate";
+  $("#authTitle").textContent = registering ? "Crear cuenta de cliente" : "Iniciar sesión";
+  $("#authSubtitle").textContent = registering ? "Registrate para pedir turnos y consultar tus reparaciones." : "Ingresá con tu cuenta para acceder al sistema.";
+  $("#authSwitch").textContent = registering ? "¿Ya tenés cuenta? Iniciá sesión" : "¿No tenés cuenta? Registrate";
   (registering ? $("#registerName") : $("#loginEmail")).focus();
 }
 
@@ -217,12 +217,12 @@ function renderRepairs() {
 
 function renderRepairCards(filter) {
   const items = state.repairs.filter(item => filter === "ALL" || item.status === filter);
-  $("#repairsGrid").innerHTML = items.map(item => `<div class="col-md-6 col-xl-4"><article class="repair-card"><div class="repair-card-top"><span class="device-icon"><i class="bi bi-laptop"></i></span><span class="order-code">#${item.id}</span></div><h3>${item.model}</h3><div class="model">${item.device} - ${item.serial || "Sin numero de serie"}</div><div class="issue-box"><strong>Falla:</strong> ${item.issue}</div><div class="repair-meta"><div><span>Cliente</span><strong>${item.client_name}</strong></div><div class="text-end"><span>Ingreso</span><strong>${formatDate(item.date)}</strong></div></div><div class="delivery-field"><label>Fecha de entrega</label><input class="form-control repair-delivery" data-id="${item.id}" type="date" value="${String(item.delivery_date || "").slice(0, 10)}"></div><div class="repair-actions"><select class="form-select repair-status" data-id="${item.id}">${repairStatuses.map(status => `<option value="${status}" ${status === item.status ? "selected" : ""}>${statusLabels[status]}</option>`).join("")}</select></div></article></div>`).join("") || `<div class="col-12">${emptyState("No hay reparaciones en este estado")}</div>`;
+  $("#repairsGrid").innerHTML = items.map(item => `<div class="col-md-6 col-xl-4"><article class="repair-card"><div class="repair-card-top"><span class="device-icon"><i class="bi bi-laptop"></i></span><span class="order-code">#${item.id}</span></div><h3>${item.model}</h3><div class="model">${item.device} - ${item.serial || "Sin n?mero de serie"}</div><div class="issue-box"><strong>Falla:</strong> ${item.issue}</div><div class="repair-meta"><div><span>Cliente</span><strong>${item.client_name}</strong></div><div class="text-end"><span>Ingreso</span><strong>${formatDate(item.date)}</strong></div></div><div class="delivery-field"><label>Fecha de entrega</label><input class="form-control repair-delivery" data-id="${item.id}" type="date" value="${String(item.delivery_date || "").slice(0, 10)}"></div><div class="repair-actions"><select class="form-select repair-status" data-id="${item.id}">${repairStatuses.map(status => `<option value="${status}" ${status === item.status ? "selected" : ""}>${statusLabels[status]}</option>`).join("")}</select></div></article></div>`).join("") || `<div class="col-12">${emptyState("No hay reparaciones en este estado")}</div>`;
 }
 
 
 function setView(view) {
-  const titles = { dashboard: "Resumen general", turnos: "Gestion de turnos", clientes: "Administracion de clientes", reparaciones: "Seguimiento de reparaciones" };
+  const titles = { dashboard: "Resumen general", turnos: "Gesti?n de turnos", clientes: "Administraci?n de clientes", reparaciones: "Seguimiento de reparaciones" };
   $$(".app-view").forEach(element => element.classList.remove("active"));
   $(`#${view}View`).classList.add("active");
   $$(".sidebar-nav .nav-link").forEach(link => link.classList.toggle("active", link.dataset.view === view));
@@ -344,7 +344,7 @@ document.addEventListener("click", async event => {
   const cancelAppointment = event.target.closest(".cancel-appointment");
   if (cancelAppointment) {
     const item = state.appointments.find(row => Number(row.id) === Number(cancelAppointment.dataset.id));
-    if (!item || !confirm("Cancelar este turno?")) return;
+    if (!item || !confirm("¿Cancelar este turno?")) return;
     try {
       await api(`/api/admin/appointments/${cancelAppointment.dataset.id}`, {
         method: "PUT",
