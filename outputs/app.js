@@ -222,7 +222,7 @@ function renderRepairCards(filter) {
 
 
 function setView(view) {
-  const titles = { dashboard: "Resumen general", turnos: "Gesti?n de turnos", clientes: "Administraci?n de clientes", reparaciones: "Seguimiento de reparaciones" };
+  const titles = { dashboard: "Resumen general", turnos: "Gestion de turnos", clientes: "Administracion de clientes", reparaciones: "Seguimiento de reparaciones" };
   $$(".app-view").forEach(element => element.classList.remove("active"));
   $(`#${view}View`).classList.add("active");
   $$(".sidebar-nav .nav-link").forEach(link => link.classList.toggle("active", link.dataset.view === view));
