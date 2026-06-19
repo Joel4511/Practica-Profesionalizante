@@ -281,13 +281,26 @@ app.put("/api/admin/clients/:id", requireAuth, requireRole("ADMIN"), asyncRoute(
 }));
 
 app.delete("/api/admin/clients/:id", requireAuth, requireRole("ADMIN"), asyncRoute(async (req, res) => {
+  const connection = await db.pool.connect();
   try {
-    const result = await db.query("DELETE FROM clients WHERE id = $1 AND user_id IS NULL RETURNING id", [req.params.id]);
-    if (!result.rowCount) return res.status(409).json({ error: "No se puede eliminar una cuenta registrada o un cliente inexistente." });
+    await connection.query("BEGIN");
+    const client = await connection.query("SELECT id, user_id FROM clients WHERE id = $1", [req.params.id]);
+    if (!client.rowCount) {
+      await connection.query("ROLLBACK");
+      return res.status(404).json({ error: "Cliente no encontrado." });
+    }
+    const userId = client.rows[0].user_id;
+    await connection.query("DELETE FROM appointments WHERE client_id = $1", [req.params.id]);
+    await connection.query("DELETE FROM repairs WHERE client_id = $1", [req.params.id]);
+    await connection.query("DELETE FROM clients WHERE id = $1", [req.params.id]);
+    if (userId) await connection.query("DELETE FROM users WHERE id = $1 AND role = 'CLIENT'", [userId]);
+    await connection.query("COMMIT");
     res.status(204).end();
   } catch (error) {
-    if (error.code === "23503") return res.status(409).json({ error: "El cliente tiene turnos o reparaciones asociados." });
+    await connection.query("ROLLBACK");
     throw error;
+  } finally {
+    connection.release();
   }
 }));
 
