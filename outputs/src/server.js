@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const db = require("./db");
+const { webhookTelegram } = require("./telegram");
 const { setSessionCookie, clearSessionCookie, requireAuth, requireRole } = require("./auth");
 
 if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
@@ -31,6 +32,7 @@ app.use(helmet({
 app.use(express.json({ limit: "200kb" }));
 app.use(cookieParser());
 app.use(express.static(publicDir));
+app.post("/api/telegram/webhook", webhookTelegram);
 
 const clean = value => String(value || "").trim();
 const emailValue = value => clean(value).toLowerCase();

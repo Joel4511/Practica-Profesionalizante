@@ -1,0 +1,54 @@
+.tgt-chat-abrir, .tgt-chat-enviar {
+  background: #4747bd;
+  color: white;
+  border: 0;
+  border-radius: 12px;
+  padding: .65rem 1rem;
+  font-weight: 700;
+}
+
+.tgt-chat-abrir {
+  position: fixed;
+  z-index: 1045;
+  inset: auto max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) auto;
+  box-shadow: 0 6px 22px #171a2e42;
+  min-height: 44px;
+}
+
+.tgt-chat {
+  position: fixed;
+  inset: auto max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) auto;
+  width: min(25rem, calc(100% - 2rem));
+  height: min(33rem, calc(100dvh - 2rem));
+  max-height: none;
+  margin: 0;
+  border: 1px solid #e8e9f1;
+  border-radius: 18px;
+  padding: 0;
+  color: #25283d;
+  background: white;
+  box-shadow: 0 16px 60px #171a2e45;
+}
+
+.tgt-chat[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto auto auto; }
+.tgt-chat::backdrop { background: #171a2e50; }
+.tgt-chat header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .5rem 1rem;
+  background: #171a2e;
+  color: white;
+}
+.tgt-chat header h2 { font-size: 1.1rem; margin: 0; }
+.tgt-chat-cerrar { min-width: 44px; min-height: 44px; border: 0; background: transparent; color: white; font-size: 1.5rem; }
+.tgt-chat-mensajes { overflow: auto; padding: 1rem; }
+.tgt-chat-mensajes p { background: #f0f0fb; padding: .65rem .8rem; border-radius: 12px; width: fit-content; max-width: 92%; overflow-wrap: anywhere; margin: 0 0 .6rem; }
+.tgt-chat-mensajes strong { display: block; font-size: .8rem; }
+.tgt-chat-mensajes .tgt-chat-usuario { margin-left: auto; background: #4747bd; color: white; }
+.tgt-chat-sugerencias { display: flex; flex-wrap: wrap; gap: .4rem; padding: .5rem 1rem; }
+.tgt-chat-sugerencias button { background: white; color: #393998; border: 1px solid #c5c5e9; border-radius: 12px; padding: .35rem .65rem; font-size: .84rem; min-height: 34px; }
+.tgt-chat form { display: flex; gap: .5rem; padding: .65rem 1rem .4rem; }
+.tgt-chat-telegram { justify-self: start; margin: 0 1rem .6rem; padding: .3rem 0; color: #393998; font-size: .875rem; font-weight: 700; }
+.tgt-chat input { width: 100%; min-width: 0; padding: .55rem; border: 1px solid #9497aa; border-radius: 10px; font-size: 1rem; }
+.tgt-chat input:focus-visible, .tgt-chat button:focus-visible, .tgt-chat-abrir:focus-visible { outline: 2px solid #7070e5; outline-offset: 2px; }
