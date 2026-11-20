@@ -203,6 +203,7 @@ El chat de la web y el bot de Telegram responden las mismas preguntas sobre turn
 2. Copiá `.env.example` a `.env` y completá las claves. Generá `JWT_SECRET` y `TELEGRAM_WEBHOOK_SECRET` con `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`. El secreto del webhook debe quedar igual en Vercel y en el `.env` local.
 3. Guardá el token de BotFather como `TELEGRAM_BOT_TOKEN` en `outputs/.env`. El servidor de Vercel solo necesita el secreto del webhook.
 4. En Vercel, configurá `outputs` como **Root Directory**, conectá la rama que contiene estos cambios y agregá `DATABASE_URL`, `JWT_SECRET`, `NODE_ENV=production`, `DB_POOL_MAX=5` y `TELEGRAM_WEBHOOK_SECRET` en las variables de entorno de producción. `TELEGRAM_BOT_TOKEN` solo se necesita localmente para registrar el webhook.
+   Para Preview, Vercel usa una clave independiente `JWT_SECRET_PREVIEW` con alcance limitado a la rama de pruebas.
 5. Desplegá esa rama. Desde `outputs`, ejecutá `node scripts/telegram-webhook.js https://TU-DOMINIO.vercel.app`. El script comprueba que el despliegue acepte el secreto antes de registrar el webhook.
 6. Abrí el bot en Telegram y probá `/start` y una de las preguntas sugeridas.
 

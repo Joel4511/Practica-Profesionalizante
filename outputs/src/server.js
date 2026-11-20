@@ -8,9 +8,11 @@ const db = require("./db");
 const { webhookTelegram } = require("./telegram");
 const { setSessionCookie, clearSessionCookie, requireAuth, requireRole } = require("./auth");
 
-if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+const jwtSecret = process.env.JWT_SECRET || process.env.JWT_SECRET_PREVIEW;
+if (!jwtSecret || jwtSecret.length < 32) {
   throw new Error("JWT_SECRET debe tener al menos 32 caracteres");
 }
+if (!process.env.JWT_SECRET) process.env.JWT_SECRET = jwtSecret;
 
 const app = express();
 const port = Number(process.env.PORT) || 3000;
