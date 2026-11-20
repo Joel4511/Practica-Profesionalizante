@@ -1,11 +1,12 @@
 const { Pool } = require("pg");
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("Falta DATABASE_URL en el archivo .env");
+const databaseUrl = process.env.DATABASE_URL || process.env.DATABASE_POSTGRES_URL;
+if (!databaseUrl) {
+  throw new Error("Falta DATABASE_URL o DATABASE_POSTGRES_URL en el entorno.");
 }
 
 const poolConfig = {
-  connectionString: process.env.DATABASE_URL,
+  connectionString: databaseUrl,
   max: Number(process.env.DB_POOL_MAX) || 5,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
