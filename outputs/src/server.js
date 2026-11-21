@@ -1,5 +1,4 @@
 require("dotenv").config();
-const { timingSafeEqual } = require("node:crypto");
 const path = require("path");
 const express = require("express");
 const helmet = require("helmet");
@@ -53,31 +52,6 @@ async function clientForUser(userId) {
 app.get("/api/health", asyncRoute(async (_req, res) => {
   await db.query("SELECT 1");
   res.json({ status: "ok", service: "TGT" });
-}));
-
-// One-time guarded admin credential synchronization; remove after provisioning.
-app.post("/api/internal/admin-reset-once", asyncRoute(async (req, res) => {
-  const expected = Buffer.from(process.env.ADMIN_RESET_ONCE_TOKEN || "");
-  const provided = Buffer.from(req.get("X-Admin-Reset-Token") || "");
-  if (!expected.length || expected.length !== provided.length || !timingSafeEqual(expected, provided)) {
-    return res.sendStatus(404);
-  }
-
-  const name = clean(process.env.ADMIN_NAME) || "Administrador TGT";
-  const email = emailValue(process.env.ADMIN_EMAIL);
-  const password = String(process.env.ADMIN_PASSWORD || "");
-  if (!email || password.length < 8) return res.sendStatus(503);
-
-  const passwordHash = await bcrypt.hash(password, 12);
-  await db.query(
-    `INSERT INTO users (name, email, password_hash, role)
-     VALUES ($1, $2, $3, 'ADMIN')
-     ON CONFLICT (email) DO UPDATE
-     SET name = EXCLUDED.name, password_hash = EXCLUDED.password_hash,
-         role = 'ADMIN', updated_at = NOW()`,
-    [name, email, passwordHash]
-  );
-  res.json({ ok: true, email });
 }));
 
 app.post("/api/auth/register", asyncRoute(async (req, res) => {
